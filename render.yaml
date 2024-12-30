@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: spotify-php-app
+    env: php
+    buildCommand: composer install
+    startCommand: heroku-php-apache2
+    envVars:
+      - key: CLIENT_ID
+        value: 2470acd4daaa4cff89d17f105ee754c3
+      - key: CLIENT_SECRET
+        value: 2de90a0993694c69aeb5931be2ac4d7c

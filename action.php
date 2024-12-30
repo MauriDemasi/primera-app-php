@@ -12,8 +12,8 @@
     <?php
     function getSpotifyAccesToken()
     {
-        $clientId = "2470acd4daaa4cff89d17f105ee754c3";
-        $clientSecret =  "2de90a0993694c69aeb5931be2ac4d7c";
+        $clientId = getenv('CLIENT_ID');
+        $clientSecret = getenv('CLIENT_SECRET');
         $tokenUrl = "https://accounts.spotify.com/api/token";
 
         // Configurar la solicitud para obtener el token
