@@ -9,6 +9,7 @@
 </head>
 
 <body class="bg-gray-300">
+    <a href="index.php" class="bg-blue-500 text-white p-2 rounded-lg block text-center">Volver</a>
     <?php
     function getSpotifyAccesToken() {
         $opts = [
