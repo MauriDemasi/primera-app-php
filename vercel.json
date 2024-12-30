@@ -1,13 +1,15 @@
 {
-    "functions": {
-      "api/*.php": {
-        "runtime": "vercel-php@0.7.3"
-      }
-    },
-    "routes": [
-      { "src": "/index.php", "dest": "/api/index.php" },
-      { "src": "/action.php", "dest": "/api/action.php" },
-      { "src": "/(.*)", "dest": "/api/index.php" }
-    ]
+  "functions": {
+    "api/*.php": {
+      "runtime": "vercel-php@0.7.3"
+    }
+  },
+  "routes": [
+    { "src": "/index.php", "dest": "/api/index.php" },
+    { "src": "/action.php", "dest": "/api/action.php" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
+  ],
+  "env": {
+    "PHP_INI_SCAN_DIR": "/var/task/user/.vercel"
   }
-  
+}

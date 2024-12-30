@@ -10,53 +10,38 @@
 
 <body class="bg-gray-300">
     <?php
-    function getSpotifyAccesToken()
-    {
-        $clientId = getenv('CLIENT_ID');
-        $clientSecret = getenv('CLIENT_SECRET');
-        $tokenUrl = "https://accounts.spotify.com/api/token";
-
-        // Configurar la solicitud para obtener el token
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $tokenUrl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Basic ' . base64_encode("$clientId:$clientSecret"),
-            'Content-Type: application/x-www-form-urlencoded'
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // Ejecutar la solicitud
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        if ($response === false) {
-            throw new Exception("Error al obtener el token de acceso");
-        }
+    function getSpotifyAccesToken() {
+        $opts = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Authorization: Basic ' . base64_encode(getenv('CLIENT_ID') . ':' . getenv('CLIENT_SECRET')),
+                    'Content-Type: application/x-www-form-urlencoded'
+                ],
+                'content' => 'grant_type=client_credentials'
+            ]
+        ];
+        
+        $context = stream_context_create($opts);
+        $response = file_get_contents('https://accounts.spotify.com/api/token', false, $context);
         $data = json_decode($response, true);
-
-        if (!isset($data['access_token'])) {
-            throw new Exception("No se pudo obtener el token de acceso");
-        }
-
         return $data['access_token'];
     }
-
-    function getSpotifyData($query, $type = 'track')
-    {
+    
+    function getSpotifyData($query, $type = 'track') {
         $accessToken = getSpotifyAccesToken();
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.spotify.com/v1/search?q=" . urlencode($query) . "&type=$type");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer $accessToken",
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "Authorization: Bearer $accessToken\r\n"
+            ]
+        ];
+        
+        $context = stream_context_create($opts);
+        $url = "https://api.spotify.com/v1/search?q=" . urlencode($query) . "&type=$type";
+        $response = file_get_contents($url, false, $context);
         return json_decode($response, true);
     }
-
     //capturamos el valor del input
     if (isset($_GET['query'])) {
         // Lógica Principal
